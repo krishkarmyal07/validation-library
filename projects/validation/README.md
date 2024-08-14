@@ -17,7 +17,8 @@ npm install ng-confirm-password-validator --save
 
 ## Usage
 
-Using the Validators
+#### Using the Validators
+
 Create a form in your component and use the validators provided by the library:
 
 ```typescript
@@ -93,3 +94,4 @@ Pull requests are welcome.
 ### Submitted by
 
 [Krishna Karmyal](https://www.linkedin.com/in/krishna-karmyal/)
+

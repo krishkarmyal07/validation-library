@@ -1,27 +1,97 @@
-# ValidationLibrary
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.2.
+This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.0.
 
-## Development server
+# Validation Library
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+An Angular library for form validation including email validation, password strength validation, and password confirmation matching.
 
-## Code scaffolding
+## Installation
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+To install the library, use npm:
 
-## Build
+```bash
+npm install ng-confirm-password-validator --save 
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Usage
 
-## Running end-to-end tests
+#### Using the Validators
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Create a form in your component and use the validators provided by the library:
 
-## Further help
+```typescript
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { emailValidator, passwordStrengthValidator, passwordMatchValidator } from 'ng-confirm-password-validator'; // Import validators
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+@Component({
+  selector: 'app-user-form',
+  templateUrl: './user-form.component.html'
+})
+export class UserFormComponent {
+  form: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.form = this.fb.group(
+      {
+        email: ['', [Validators.required, emailValidator()]],
+        password: ['', [Validators.required, passwordStrengthValidator()]],
+        confirmPassword: ['', [Validators.required]],
+      },
+      { validators: passwordMatchValidator('password', 'confirmPassword') }
+    );
+  }
+
+  onSubmit() {
+    if (this.form.valid) {
+      console.log('Form Submitted', this.form.value);
+    }
+  }
+}
+```
+Form Template Example
+Here’s an example of how to create the form template with validation feedback:
+
+```html
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <label for="email">Email:</label>
+    <input id="email" formControlName="email" type="text" />
+    <div *ngIf="form.controls['email'].invalid && form.controls['email'].touched">
+        <div *ngIf="form.controls['email'].errors?.['required']">Email is required.</div>
+        <div *ngIf="form.controls['email'].errors?.['invalidEmail']">Invalid email format.</div>
+    </div>
+
+    <label for="password">Password:</label>
+    <input id="password" formControlName="password" type="password" />
+    <div *ngIf="form.controls['password'].invalid && form.controls['password'].touched">
+        <div *ngIf="form.controls['password'].errors?.['required']">Password is required.</div>
+        <div *ngIf="form.controls['password'].errors?.['passwordStrength']">Password must include uppercase, lowercase,
+            numeric, and special characters.</div>
+    </div>
+
+    <label for="confirmPassword">Confirm Password:</label>
+    <input id="confirmPassword" formControlName="confirmPassword" type="password" />
+    <div *ngIf="form.errors?.['passwordMismatch'] && form.controls['confirmPassword'].touched">
+        <div>Passwords do not match.</div>
+    </div>
+
+    <button type="submit" [disabled]="form.invalid">Submit</button>
+
+</form>
+```
+
+Running the Application
+After setting up the form, start your Angular application to test the validators:
+
+## Contributing
+
+Pull requests are welcome.
+
+
+### Submitted by
+
+[Krishna Karmyal](https://www.linkedin.com/in/krishna-karmyal/)
+
